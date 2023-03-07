@@ -1,0 +1,14 @@
+{
+  "extends": "@fullstacksjs/tsconfig",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "emitDecoratorMetadata": true,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false
+  },
+  "include": ["src", "test"],
+  "exclude": ["node_modules"]
+}
