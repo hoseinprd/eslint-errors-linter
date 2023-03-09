@@ -14,7 +14,7 @@ export type Options = [{ type: CaseType; pattern?: string }];
 
 const createRule = ESLintUtils.RuleCreator(() => RULE_NAME);
 
-export const rule = createRule<Options, "constantCase">({
+const rule = createRule<Options, "constantCase">({
   name: RULE_NAME,
   meta: {
     docs: {

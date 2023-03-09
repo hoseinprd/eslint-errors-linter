@@ -7,7 +7,7 @@ import {
   isSnakeCase,
   isTrainCase,
 } from "naming-conventions-modeler";
-import { CaseType, Options } from "../rules";
+import { CaseType, Options } from "../rules/constant-error-argument-case";
 
 export const checkArgsCase = (
   node: TSESTree.Node,
