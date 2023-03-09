@@ -18,8 +18,6 @@ export const checkArgsCase = (
   if (node.type !== "NewExpression" || node.callee.type !== "Identifier")
     return;
 
-    console.log({ pattern, pass: new RegExp(pattern, "u").test(node.callee.name) })
-
   if (!new RegExp(pattern, "u").test(node.callee.name)) return;
 
   const errorArg = node.arguments[0];
@@ -50,8 +48,6 @@ export const checkArgsCase = (
     default:
       isCaseMatched = false;
   }
-
-  console.log(type, errorArg.value, { isCaseMatched });
 
   if (!isCaseMatched) {
     ctx.report({
