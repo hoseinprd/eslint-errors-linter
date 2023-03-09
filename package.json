@@ -4,6 +4,7 @@
   "description": "Enforce error messages in specific shape",
   "main": "./dist/index.js",
   "scripts": {
+    "build": "tsc",
     "test": "jest"
   },
   "repository": {
