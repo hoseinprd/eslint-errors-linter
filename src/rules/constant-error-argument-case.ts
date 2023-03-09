@@ -1,11 +1,20 @@
-import { ESLintUtils, TSESTree } from "@typescript-eslint/utils";
+import { ESLintUtils } from "@typescript-eslint/utils";
+
+import { checkArgsCase } from "../utils";
 import { RULE_NAME } from "../constants";
 
-type Options = ["kebab-case" | "PascalCase" | 'space-case'];
+export type CaseType =
+  | "kebab-case"
+  | "MACRO_CASE"
+  | "no case"
+  | "snake_case"
+  | "Train-Case";
+
+export type Options = [{ type: CaseType; pattern?: string }];
 
 const createRule = ESLintUtils.RuleCreator(() => RULE_NAME);
 
-export const rule = createRule({
+export const rule = createRule<Options, "constantCase">({
   name: RULE_NAME,
   meta: {
     docs: {
@@ -18,49 +27,29 @@ export const rule = createRule({
     },
     schema: [
       {
-        type: "string",
+        type: "object",
+        properties: {
+          caseType: {
+            enum: ["kebab-case", "MACRO_CASE", "no case", "snake_case"],
+          },
+          regex: {
+            type: "object",
+          },
+        },
       },
     ],
     type: "suggestion",
   },
-  defaultOptions: ["PascalCase"],
+  defaultOptions: [
+    {
+      type: "MACRO_CASE",
+      pattern: "Error$",
+    },
+  ],
 
-  create: (context, [options]) => {
-    const isPascalCase = options === "PascalCase";
-
-    function checkArgumentCase(node: TSESTree.Node) {
-      if (
-        node.type === "NewExpression" &&
-        node.callee.type === "Identifier" &&
-        node.callee.name === "Error"
-      ) {
-        const errorArg = node.arguments[0];
-        if (
-          errorArg &&
-          errorArg.type === "Literal" &&
-          typeof errorArg.value === "string"
-        ) {
-          const argName = context.getSourceCode().getText(errorArg);
-          const isConstantCase = isPascalCase
-            ? /^[A-Z]+(?:_[A-Z]+)*$/.test(errorArg.value)
-            : /^[a-z]+(?:-[a-z]+)*$/.test(errorArg.value);
-
-          if (!isConstantCase) {
-            context.report({
-              node: errorArg,
-              messageId: "constantCase",
-              data: {
-                argName,
-                case: isPascalCase ? "PascalCase" : "kebab-case",
-              },
-            });
-          }
-        }
-      }
-    }
-
+  create: (context, [{ type, pattern }]) => {
     return {
-      NewExpression: checkArgumentCase,
+      NewExpression: (node) => checkArgsCase(node, context, type, pattern),
     };
   },
 });
